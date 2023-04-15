@@ -1,0 +1,26 @@
+{
+  "name": "spackle-node",
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.312.0",
+    "@aws-sdk/client-sts": "^3.312.0",
+    "node-fetch": "^2.6.9",
+    "stripe": "^12.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/node-fetch": "^2.6.3",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.4"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Hunter Clarke <hunter@spackle.so>",
+  "license": "MIT",
+  "type": "commonjs"
+}
