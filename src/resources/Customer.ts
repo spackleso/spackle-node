@@ -6,8 +6,8 @@ export type Feature = {
   name: string
   key: string
   type: 0 | 1
-  value_flag: boolean
-  value_limit: number
+  value_flag: boolean | null
+  value_limit: number | null
 }
 
 export type CustomerData = {

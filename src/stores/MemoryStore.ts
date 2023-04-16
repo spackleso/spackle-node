@@ -1,3 +1,4 @@
+import { CustomerData } from '../resources/Customer'
 import Store from './Store'
 
 class MemoryStore implements Store {
@@ -14,7 +15,7 @@ class MemoryStore implements Store {
     return Promise.reject(new Error('spackle: customer not found'))
   }
 
-  public setCustomerData(key: string, value: any): Promise<void> {
+  public setCustomerData(key: string, value: CustomerData): Promise<void> {
     this.store[key] = value
     return Promise.resolve()
   }

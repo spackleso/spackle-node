@@ -1,17 +1,11 @@
 import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb'
-import {
-  AssumeRoleWithWebIdentityCommand,
-  STSClient,
-} from '@aws-sdk/client-sts'
-import { AwsCredentialIdentityProvider } from '@aws-sdk/types'
-import { CredentialsProviderError } from '@aws-sdk/property-provider'
 
 import Spackle from '../Spackle'
 import Store from './Store'
 import fetch from 'node-fetch'
-import crypto from 'crypto'
+import { createSession, fromSpackleCredentials } from './DynamoDBCredentials'
 
-type SpackleSession = {
+export type SpackleSession = {
   account_id: string
   adapter: {
     name: string
@@ -50,7 +44,7 @@ class DynamoDBStore implements Store {
   }
 
   async getCustomerData(customerId: string) {
-    this.bootstrap()
+    await this.bootstrap()
 
     if (!this.session || !this.client) {
       throw new Error('spackle: session or client not initialized')
@@ -103,60 +97,6 @@ class DynamoDBStore implements Store {
 
     return await response.json()
   }
-}
-
-async function createSession(spackle: Spackle): Promise<SpackleSession> {
-  const url = `${spackle.apiBase}/sessions`
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${spackle.apiKey}`,
-    },
-  })
-  return await response.json()
-}
-
-const fromSpackleCredentials = (
-  spackle: Spackle,
-  session: any,
-  setSession: (s: any) => void,
-): AwsCredentialIdentityProvider => {
-  async function spackleCredentials() {
-    if (!session) {
-      session = await createSession(spackle)
-      setSession(session)
-    }
-
-    const sts = new STSClient({
-      region: session.adapter.region,
-    })
-
-    const { Credentials } = await sts.send(
-      new AssumeRoleWithWebIdentityCommand({
-        RoleArn: session.adapter.role_arn,
-        RoleSessionName: crypto.randomBytes(16).toString('hex'),
-        WebIdentityToken: session.adapter.token,
-      }),
-    )
-
-    if (
-      !Credentials ||
-      !Credentials.AccessKeyId ||
-      !Credentials.SecretAccessKey
-    ) {
-      throw new CredentialsProviderError('Credentials not found')
-    }
-
-    return {
-      accessKeyId: Credentials.AccessKeyId,
-      secretAccessKey: Credentials.SecretAccessKey,
-      sessionToken: Credentials.SessionToken,
-      expiration: Credentials.Expiration,
-    }
-  }
-
-  return spackleCredentials
 }
 
 export default DynamoDBStore

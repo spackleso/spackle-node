@@ -1,3 +1,4 @@
+import { CustomerData } from '../resources/Customer'
 import Store from './Store'
 import * as fs from 'fs/promises'
 
@@ -15,7 +16,10 @@ class FileStore implements Store {
   public async getCustomerData(key: string): Promise<any> {
     let data
     try {
-      const content = await fs.readFile(this.path, { encoding: 'utf8' })
+      const content = await fs.readFile(this.path, {
+        encoding: 'utf8',
+        flag: 'r',
+      })
       data = JSON.parse(content)
     } catch (error) {
       data = {}
@@ -28,10 +32,16 @@ class FileStore implements Store {
     return Promise.reject(new Error('spackle: customer not found'))
   }
 
-  public async setCustomerData(key: string, value: any): Promise<void> {
+  public async setCustomerData(
+    key: string,
+    value: CustomerData,
+  ): Promise<void> {
     let data: any
     try {
-      const content = await fs.readFile(this.path, { encoding: 'utf8' })
+      const content = await fs.readFile(this.path, {
+        encoding: 'utf8',
+        flag: 'r',
+      })
       data = JSON.parse(content)
     } catch (error) {
       console.error(error)
@@ -39,7 +49,10 @@ class FileStore implements Store {
     }
 
     data[key] = value
-    return fs.writeFile(this.path, JSON.stringify(data), { encoding: 'utf8' })
+    return await fs.writeFile(this.path, JSON.stringify(data), {
+      encoding: 'utf8',
+      flag: 'w',
+    })
   }
 }
 
