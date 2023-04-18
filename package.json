@@ -1,6 +1,6 @@
 {
   "name": "spackle-node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.312.0",

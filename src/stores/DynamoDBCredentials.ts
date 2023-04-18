@@ -7,6 +7,7 @@ import {
 import { AwsCredentialIdentityProvider } from '@aws-sdk/types'
 import { CredentialsProviderError } from '@aws-sdk/property-provider'
 import crypto from 'crypto'
+import fetch from 'node-fetch'
 
 export async function createSession(spackle: Spackle): Promise<SpackleSession> {
   const url = `${spackle.apiBase}/sessions`
