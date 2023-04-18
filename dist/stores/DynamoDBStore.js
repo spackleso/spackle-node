@@ -13,10 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
-const client_sts_1 = require("@aws-sdk/client-sts");
-const property_provider_1 = require("@aws-sdk/property-provider");
 const node_fetch_1 = __importDefault(require("node-fetch"));
-const crypto_1 = __importDefault(require("crypto"));
+const DynamoDBCredentials_1 = require("./DynamoDBCredentials");
 class DynamoDBStore {
     constructor(spackle) {
         this.session = null;
@@ -26,19 +24,19 @@ class DynamoDBStore {
     bootstrap() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.session) {
-                this.session = yield createSession(this.spackle);
+                this.session = yield (0, DynamoDBCredentials_1.createSession)(this.spackle);
             }
             if (!this.client) {
                 this.client = new client_dynamodb_1.DynamoDBClient({
                     region: this.session.adapter.region,
-                    credentials: fromSpackleCredentials(this.spackle, this.session, (s) => (this.session = s)),
+                    credentials: (0, DynamoDBCredentials_1.fromSpackleCredentials)(this.spackle, this.session, (s) => (this.session = s)),
                 });
             }
         });
     }
     getCustomerData(customerId) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.bootstrap();
+            yield this.bootstrap();
             if (!this.session || !this.client) {
                 throw new Error('spackle: session or client not initialized');
             }
@@ -84,47 +82,4 @@ class DynamoDBStore {
         });
     }
 }
-function createSession(spackle) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const url = `${spackle.apiBase}/sessions`;
-        const response = yield (0, node_fetch_1.default)(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${spackle.apiKey}`,
-            },
-        });
-        return yield response.json();
-    });
-}
-const fromSpackleCredentials = (spackle, session, setSession) => {
-    function spackleCredentials() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!session) {
-                session = yield createSession(spackle);
-                setSession(session);
-            }
-            const sts = new client_sts_1.STSClient({
-                region: session.adapter.region,
-            });
-            const { Credentials } = yield sts.send(new client_sts_1.AssumeRoleWithWebIdentityCommand({
-                RoleArn: session.adapter.role_arn,
-                RoleSessionName: crypto_1.default.randomBytes(16).toString('hex'),
-                WebIdentityToken: session.adapter.token,
-            }));
-            if (!Credentials ||
-                !Credentials.AccessKeyId ||
-                !Credentials.SecretAccessKey) {
-                throw new property_provider_1.CredentialsProviderError('Credentials not found');
-            }
-            return {
-                accessKeyId: Credentials.AccessKeyId,
-                secretAccessKey: Credentials.SecretAccessKey,
-                sessionToken: Credentials.SessionToken,
-                expiration: Credentials.Expiration,
-            };
-        });
-    }
-    return spackleCredentials;
-};
 exports.default = DynamoDBStore;

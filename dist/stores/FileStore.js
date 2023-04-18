@@ -44,7 +44,10 @@ class FileStore {
         return __awaiter(this, void 0, void 0, function* () {
             let data;
             try {
-                const content = yield fs.readFile(this.path, { encoding: 'utf8' });
+                const content = yield fs.readFile(this.path, {
+                    encoding: 'utf8',
+                    flag: 'r',
+                });
                 data = JSON.parse(content);
             }
             catch (error) {
@@ -60,7 +63,10 @@ class FileStore {
         return __awaiter(this, void 0, void 0, function* () {
             let data;
             try {
-                const content = yield fs.readFile(this.path, { encoding: 'utf8' });
+                const content = yield fs.readFile(this.path, {
+                    encoding: 'utf8',
+                    flag: 'r',
+                });
                 data = JSON.parse(content);
             }
             catch (error) {
@@ -68,7 +74,10 @@ class FileStore {
                 data = {};
             }
             data[key] = value;
-            return fs.writeFile(this.path, JSON.stringify(data), { encoding: 'utf8' });
+            return yield fs.writeFile(this.path, JSON.stringify(data), {
+                encoding: 'utf8',
+                flag: 'w',
+            });
         });
     }
 }

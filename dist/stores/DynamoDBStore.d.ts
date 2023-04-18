@@ -1,5 +1,16 @@
 import Spackle from '../Spackle';
 import Store from './Store';
+export type SpackleSession = {
+    account_id: string;
+    adapter: {
+        name: string;
+        identity_id: string;
+        role_arn: string;
+        table_name: string;
+        token: string;
+        region: string;
+    };
+};
 declare class DynamoDBStore implements Store {
     private spackle;
     private session;
