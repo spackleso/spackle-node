@@ -1,10 +1,8 @@
 {
   "name": "spackle-node",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.312.0",
-    "@aws-sdk/client-sts": "^3.312.0",
     "node-fetch": "^2.6.9",
     "stripe": "^12.1.1"
   },
