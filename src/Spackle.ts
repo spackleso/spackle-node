@@ -1,5 +1,5 @@
 import Waiters from './Waiters'
-import { CustomersResource } from './resources'
+import { CustomersResource, PricingTablesResource } from './resources'
 import { EdgeStore, Store } from './stores'
 
 class Spackle {
@@ -11,11 +11,13 @@ class Spackle {
   public schemaVersion: number = 1
 
   public customers: CustomersResource
+  public pricingTables: PricingTablesResource
   public waiters: Waiters
 
   constructor(apiKey: string, store: Store | null = null) {
     this.apiKey = apiKey
     this.customers = new CustomersResource(this)
+    this.pricingTables = new PricingTablesResource(this)
     this.waiters = new Waiters(this)
     this.store = store
   }
