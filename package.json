@@ -1,6 +1,6 @@
 {
   "name": "spackle-node",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "dependencies": {
     "node-fetch": "^2.6.9",
