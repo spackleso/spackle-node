@@ -5,14 +5,16 @@ import fetch from 'node-fetch'
 export type PricingTableInterval = 'month' | 'year'
 
 export type PricingTableProductPrice = {
+  id: string
   unit_amount: number
   currency: string
 }
 
 export type PricingTableProduct = {
   id: string
-  features: Feature[]
   name: string
+  description: string
+  features: Feature[]
   prices: {
     month?: PricingTableProductPrice
     year?: PricingTableProductPrice
