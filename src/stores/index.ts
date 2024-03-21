@@ -1,6 +1,6 @@
 import Store from './Store'
-import EdgeStore from './EdgeStore'
+import ApiStore from './ApiStore'
 import FileStore from './FileStore'
 import MemoryStore from './MemoryStore'
 
-export { Store, EdgeStore, FileStore, MemoryStore }
+export { Store, ApiStore, FileStore, MemoryStore }

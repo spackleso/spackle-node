@@ -1,12 +1,11 @@
 import Waiters from './Waiters'
 import { CustomersResource, PricingTablesResource } from './resources'
-import { EdgeStore, Store } from './stores'
+import { ApiStore, Store } from './stores'
 
 class Spackle {
   public apiKey: string
 
   public apiBase: string = 'https://api.spackle.so/v1'
-  public edgeBase: string = 'https://us-west-2.edge.spackle.so'
   public store: Store | null = null
   public schemaVersion: number = 1
 
@@ -24,7 +23,7 @@ class Spackle {
 
   getStore(): Store {
     if (!this.store) {
-      this.store = new EdgeStore(this)
+      this.store = new ApiStore(this)
     }
     return this.store
   }
